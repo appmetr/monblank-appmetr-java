@@ -21,7 +21,7 @@ public class MonitoringDataAccess {
     private Monitoring monitoring;
     private MonitoringCounterService monitoringCounterService;
 
-    private static final int MILLIS_PER_MINUTE = 1000 * 5;
+    private static final int MILLIS_PER_MINUTE = 1000 * 60;
 
     public MonitoringDataAccess(Monitoring monitoring, AppMetr appMetr){
         this.monitoring = monitoring;
