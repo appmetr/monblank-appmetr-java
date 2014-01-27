@@ -21,6 +21,8 @@ public class MonitoringDataAccess {
     private Monitoring monitoring;
     private MonitoringCounterService monitoringCounterService;
 
+    private Object flushJobLock = new Object();
+
     private static final int MILLIS_PER_MINUTE = 1000 * 60;
 
     public MonitoringDataAccess(Monitoring monitoring, AppMetr appMetr){
@@ -37,19 +39,21 @@ public class MonitoringDataAccess {
     }
 
     public void execute() {
-        final long startMillis = System.currentTimeMillis();
-        MutableDateTime runTime = new MutableDateTime(System.currentTimeMillis());
+        synchronized (flushJobLock){
+            final long startMillis = System.currentTimeMillis();
+            MutableDateTime runTime = new MutableDateTime(System.currentTimeMillis());
 
-        try {
-            //shift timestamp backward, 'cause we need to store events "in past"
-            runTime.addMinutes(-1 * MonblankConst.MONITOR_FLUSH_INTERVAL_MINUTES);
-            saveAndReset(runTime);
+            try {
+                //shift timestamp backward, 'cause we need to store events "in past"
+                runTime.addMinutes(-1 * MonblankConst.MONITOR_FLUSH_INTERVAL_MINUTES);
+                saveAndReset(runTime);
 
-        } catch (Exception e) {
-            logger.error("Exception while persisting monitors", e);
-        } finally {
-            final long persistEnd = System.currentTimeMillis();
-            logger.info("Monitor scheduler persist millis took: " + (persistEnd - startMillis));
+            } catch (Exception e) {
+                logger.error("Exception while persisting monitors", e);
+            } finally {
+                final long persistEnd = System.currentTimeMillis();
+                logger.info("Monitor scheduler persist millis took: " + (persistEnd - startMillis));
+            }
         }
     }
 
@@ -64,7 +68,9 @@ public class MonitoringDataAccess {
     }
 
     public void stop(){
-        flushJob.stop();
+        synchronized (flushJobLock){
+            flushJob.stop();
+        }
         appMetr.stop();
     }
 }
