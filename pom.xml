@@ -5,14 +5,14 @@
     <groupId>com.appmetr</groupId>
     <artifactId>monblank-appmetr-java</artifactId>
     <packaging>jar</packaging>
-    <version>0.1.0</version>
+    <version>0.1.1-SNAPSHOT</version>
     <name>monblank-appmetr-java</name>
 
     <scm>
         <connection>scm:git:ssh://git@github.com/appmetr/monblank-appmetr-java.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/appmetr/monblank-appmetr-java.git</developerConnection>
         <url>http://github.com/appmetr/monblank-appmetr-java</url>
-        <tag>0.1.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <distributionManagement>
