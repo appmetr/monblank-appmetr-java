@@ -5,15 +5,17 @@ import com.appmetr.monblank.Monitoring;
 import com.appmetr.monblank.s2s.MonitoringS2SImpl;
 import com.appmetr.monblank.s2s.dao.MonitoringDataAccess;
 import com.appmetr.s2s.persister.FileBatchPersister;
-import org.junit.Test;
 
 import java.util.HashMap;
 
 public class FullTest {
 
-    @Test
+    private static String token = "";
+    private static String url = "";
+    private static String filePersisterPath = "";
+
     public void testBridge(){
-        AppMetr appMetr = new AppMetr("bf099ce8-605a-40c6-b98c-b67c63eb1848", "http://localhost/api", new FileBatchPersister("/Users/pronvis/!batches"));
+        AppMetr appMetr = new AppMetr(token, url, new FileBatchPersister(filePersisterPath));
 
         Monitoring monitoring = new MonitoringS2SImpl();
         MonitoringDataAccess monitoringDataAccess = new MonitoringDataAccess(monitoring, appMetr);
