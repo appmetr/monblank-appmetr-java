@@ -11,7 +11,7 @@
     <modules>
         <module>monblank-java</module>
         <module>monblank-appmetr-java</module>
-        <module>monblank-s2s-examples</module>
+        <module>monblank-appmetr-java-examples</module>
     </modules>
 
     <scm>
@@ -90,9 +90,9 @@
             </modules>
         </profile>
         <profile>
-            <id>monblank-s2s-examples</id>
+            <id>monblank-appmetr-java-examples</id>
             <modules>
-                <module>monblank-s2s-examples</module>
+                <module>monblank-appmetr-java-examples</module>
             </modules>
         </profile>
     </profiles>

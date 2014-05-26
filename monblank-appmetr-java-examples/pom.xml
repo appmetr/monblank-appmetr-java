@@ -6,9 +6,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.appmetr</groupId>
-    <artifactId>monblank-examples</artifactId>
+    <artifactId>monblank-appmetr-java-examples</artifactId>
     <packaging>jar</packaging>
-    <name>MonBlank Client examples</name>
+    <name>MonBlank AppMetr Client examples</name>
     <version>0.1.0</version>
 
     <repositories>
