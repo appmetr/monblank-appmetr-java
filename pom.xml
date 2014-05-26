@@ -3,10 +3,16 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.appmetr</groupId>
-    <artifactId>monblank-appmetr-java</artifactId>
-    <packaging>jar</packaging>
-    <version>0.1.1-SNAPSHOT</version>
-    <name>monblank-appmetr-java</name>
+    <artifactId>monblank</artifactId>
+    <packaging>pom</packaging>
+    <version>0.1.0</version>
+    <name>Monblank</name>
+
+    <modules>
+        <module>monblank-java</module>
+        <module>monblank-appmetr-java</module>
+        <module>monblank-s2s-examples</module>
+    </modules>
 
     <scm>
         <connection>scm:git:ssh://git@github.com/appmetr/monblank-appmetr-java.git</connection>
@@ -15,124 +21,80 @@
         <tag>HEAD</tag>
     </scm>
 
-    <distributionManagement>
-        <repository>
-            <id>bintray</id>
-            <url>https://api.bintray.com/maven/appmetr/maven/monblank-appmetr-java</url>
-        </repository>
-    </distributionManagement>
-
-    <repositories>
-        <repository>
-            <id>appmetr-repo</id>
-            <url>http://dl.bintray.com/appmetr/maven</url>
-        </repository>
-    </repositories>
-
-    <dependencies>
-        <dependency>
-            <groupId>com.appmetr</groupId>
-            <artifactId>monblank-java</artifactId>
-            <version>0.2.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.appmetr</groupId>
-            <artifactId>appmetr-s2s-java</artifactId>
-            <version>0.1.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-            <version>2.2</version>
-        </dependency>
-    </dependencies>
-
     <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <includes>
-                    <include>**/*.properties</include>
-                    <include>**/*.xml</include>
-                </includes>
-                <filtering>true</filtering>
-            </resource>
-            <resource>
-                <directory>src/main/resources</directory>
-                <includes>
-                    <include>**</include>
-                </includes>
-                <excludes>
-                    <exclude>**/*.properties</exclude>
-                    <exclude>**/*.xml</exclude>
-                </excludes>
-                <filtering>false</filtering>
-            </resource>
-            <resource>
-                <directory>src/main/java</directory>
-                <includes>
-                    <include>**</include>
-                </includes>
-                <excludes>
-                    <exclude>**/*.java</exclude>
-                </excludes>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
-        <testResources>
-            <testResource>
-                <directory>src/test/java</directory>
-                <includes>
-                    <include>**</include>
-                </includes>
-                <excludes>
-                    <exclude>**/*.java</exclude>
-                </excludes>
-            </testResource>
-            <testResource>
-                <directory>src/test/resources</directory>
-                <includes>
-                    <include>**</include>
-                </includes>
-                <excludes>
-                    <exclude>**/*.java</exclude>
-                </excludes>
-            </testResource>
-        </testResources>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.5.1</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <optimize>true</optimize>
+                    <showDeprecation>true</showDeprecation>
+                    <showWarnings>true</showWarnings>
+                    <encoding>UTF-8</encoding>
+                </configuration>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <version>1.1</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
-                    <encoding>UTF-8</encoding>
-                    <outputDirectory />
+                    <timestampFormat>{0, date, HH:mm dd'/'MM'/'yyyy}</timestampFormat>
+                    <doCheck>false</doCheck>
+                    <doUpdate>false</doUpdate>
                 </configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
+                <version>2.15</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.surefire</groupId>
+                        <artifactId>surefire-junit47</artifactId>
+                        <version>2.15</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <includes>
+                        <include>**/*Test.java</include>
+                    </includes>
+                </configuration>
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>monblank-appmetr-java</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>monblank-appmetr-java</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>monblank-java</id>
+            <modules>
+                <module>monblank-java</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>monblank-s2s-examples</id>
+            <modules>
+                <module>monblank-s2s-examples</module>
+            </modules>
+        </profile>
+    </profiles>
 
 </project>

@@ -12,6 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class MonitoringDataAccess {
     private static Logger logger = LoggerFactory.getLogger(MonitoringDataAccess.class);
@@ -21,11 +23,11 @@ public class MonitoringDataAccess {
     private Monitoring monitoring;
     private MonitoringCounterService monitoringCounterService;
 
-    private Object flushJobLock = new Object();
+    private Lock flushJobLock = new ReentrantLock();
 
     private static final int MILLIS_PER_MINUTE = 1000 * 60;
 
-    public MonitoringDataAccess(Monitoring monitoring, AppMetr appMetr){
+    public MonitoringDataAccess(Monitoring monitoring, AppMetr appMetr) {
         this.monitoring = monitoring;
         this.appMetr = appMetr;
         monitoringCounterService = new MonitoringCounterService(appMetr);
@@ -39,21 +41,23 @@ public class MonitoringDataAccess {
     }
 
     public void execute() {
-        synchronized (flushJobLock){
-            final long startMillis = System.currentTimeMillis();
+        flushJobLock.lock();
+
+        final long startMillis = System.currentTimeMillis();
+        try {
             MutableDateTime runTime = new MutableDateTime(System.currentTimeMillis());
 
-            try {
-                //shift timestamp backward, 'cause we need to store events "in past"
-                runTime.addMinutes(-1 * MonblankConst.MONITOR_FLUSH_INTERVAL_MINUTES);
-                saveAndReset(runTime);
+            //shift timestamp backward, 'cause we need to store events "in past"
+            runTime.addMinutes(-1 * MonblankConst.MONITOR_FLUSH_INTERVAL_MINUTES);
+            saveAndReset(runTime);
 
-            } catch (Exception e) {
-                logger.error("Exception while persisting monitors", e);
-            } finally {
-                final long persistEnd = System.currentTimeMillis();
-                logger.info("Monitor scheduler persist millis took: " + (persistEnd - startMillis));
-            }
+        } catch (Exception e) {
+            logger.error("Exception while persisting monitors", e);
+        } finally {
+            final long persistEnd = System.currentTimeMillis();
+            logger.info("Monitor scheduler persist millis took: " + (persistEnd - startMillis));
+
+            flushJobLock.unlock();
         }
     }
 
@@ -67,10 +71,14 @@ public class MonitoringDataAccess {
         logger.info(String.format("Getting active monitors. Method execution time %s", swMethod.toString()));
     }
 
-    public void stop(){
-        synchronized (flushJobLock){
+    public void stop() {
+        flushJobLock.lock();
+
+        try {
             flushJob.stop();
+            appMetr.stop();
+        } finally {
+            flushJobLock.unlock();
         }
-        appMetr.stop();
     }
 }
