@@ -4,7 +4,8 @@ import com.appmetr.monblank.Counter;
 import com.appmetr.monblank.MonblankConst;
 import com.appmetr.monblank.MonitorKey;
 import com.appmetr.s2s.AppMetr;
-import com.appmetr.s2s.Event;
+import com.appmetr.s2s.events.Action;
+import com.appmetr.s2s.events.Event;
 import org.joda.time.DateTime;
 import org.joda.time.ReadableDateTime;
 import org.slf4j.Logger;
@@ -37,7 +38,7 @@ public class MonitoringCounterService {
         logger.info("Persisted monitors: {}", activeMonitors.size());
     }
 
-    private Event convertMonitorToEvent(Counter counter, DateTime timestamp) {
+    private Action convertMonitorToEvent(Counter counter, DateTime timestamp) {
         final MonitorKey monitorKey = counter.getKey();
         Map<String, Object> map = new HashMap<String, Object>();
         for (Map.Entry<String, String> entry : counter.getKey().getProperties().entrySet()) {
@@ -50,6 +51,6 @@ public class MonitoringCounterService {
         map.put(MonblankConst.MIN_FEATURE, counter.getMin());
         map.put(MonblankConst.MAX_FEATURE, counter.getMax());
 
-        return new Event(monitorKey.getName(), timestamp.getMillis(), map);
+        return new Event(monitorKey.getName()).setTimestamp(timestamp.getMillis()).setProperties(map);
     }
 }
