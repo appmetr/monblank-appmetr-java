@@ -12,7 +12,7 @@ public class Counter {
     /** The minimum of all values */
     protected double min = Double.MAX_VALUE;
     /** The maximum of all values */
-    protected double max = -Double.MAX_VALUE;
+    protected double max = Double.MIN_VALUE;
     /** The total number of occurrences/calls to this object */
     protected long hits = 0;
     /** Intermediate value used to calculate std dev */
@@ -53,8 +53,8 @@ public class Counter {
 
     protected synchronized void reset() {
         total = 0.0;
-        min = -Double.MAX_VALUE;
-        max = Double.MAX_VALUE;
+        min = Double.MAX_VALUE;
+        max = Double.MIN_VALUE;
         hits = 0;
         sumOfSquares = 0.0;
         firstAccess = 0;
