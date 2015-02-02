@@ -22,19 +22,19 @@
         <dependency>
             <groupId>com.appmetr</groupId>
             <artifactId>monblank-java</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
 
         <dependency>
             <groupId>com.appmetr</groupId>
             <artifactId>appmetr-s2s-java</artifactId>
-            <version>0.1.8</version>
+            <version>0.1.9</version>
         </dependency>
 
         <dependency>
             <groupId>com.appmetr</groupId>
             <artifactId>monblank-appmetr-java</artifactId>
-            <version>0.2.0</version>
+            <version>0.2.3</version>
         </dependency>
 
         <!-- Guice -->

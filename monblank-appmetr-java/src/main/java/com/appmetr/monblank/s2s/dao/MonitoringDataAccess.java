@@ -36,7 +36,7 @@ public class MonitoringDataAccess {
             @Override public void run() {
                 execute();
             }
-        });
+        }, "MonitorFlushJob");
         new Thread(flushJob).start();
     }
 
