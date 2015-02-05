@@ -9,14 +9,6 @@ public class MonitoringStub implements Monitoring {
         return new StopWatch().start();
     }
 
-    @Override public void add(String group, String monitorName, String units, double value) {
-        //NOP
-    }
-
-    @Override public void inc(String group, String monitorName) {
-        //NOP
-    }
-
     @Override public StopWatch start(String group, String monitorName, Map<String, String> properties) {
         return new StopWatch().start();
     }
@@ -29,11 +21,31 @@ public class MonitoringStub implements Monitoring {
         //NOP
     }
 
+    @Override public void add(String group, String monitorName, String units, double value) {
+        //NOP
+    }
+
     @Override public void add(MonitorKey key, double value) {
         //NOP
     }
 
+    @Override public void set(String group, String monitorName, String units, double value, Map<String, String> properties) {
+        //NOP
+    }
+
+    @Override public void set(String group, String monitorName, String units, double value) {
+        //NOP
+    }
+
+    @Override public void set(MonitorKey key, double value) {
+        //NOP
+    }
+
     @Override public void inc(String group, String monitorName, Map<String, String> properties) {
+        //NOP
+    }
+
+    @Override public void inc(String group, String monitorName) {
         //NOP
     }
 

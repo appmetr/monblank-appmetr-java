@@ -32,6 +32,11 @@ public class MonitoringS2SImpl implements Monitoring {
         counter.update(value);
     }
 
+    private void setCounter(MonitorKey key, double value) {
+        final Counter counter = getOrCreateCounter(key);
+        counter.set(value);
+    }
+
     private Counter getOrCreateCounter(MonitorKey key) {
         final Counter counter = monitors.get(key);
         return counter == null ? safeCreateCounter(key) : counter;
@@ -70,6 +75,18 @@ public class MonitoringS2SImpl implements Monitoring {
 
     @Override public void add(MonitorKey key, double value) {
         updateCounter(key, value);
+    }
+
+    @Override public void set(String group, String monitorName, String units, double value, Map<String, String> properties) {
+        setCounter(new MonitorKey(buildMonitorName(group, monitorName, units), properties), value);
+    }
+
+    @Override public void set(String group, String monitorName, String units, double value) {
+        setCounter(new MonitorKey(buildMonitorName(group, monitorName, units)), value);
+    }
+
+    @Override public void set(MonitorKey key, double value) {
+        setCounter(key, value);
     }
 
     @Override public void inc(String group, String monitorName) {
