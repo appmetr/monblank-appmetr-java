@@ -9,7 +9,7 @@
     <artifactId>monblank-appmetr-java</artifactId>
     <packaging>jar</packaging>
     <name>MonBlank Client realization via AppMetr</name>
-    <version>0.2.5-SNAPSHOT</version>
+    <version>0.2.5</version>
 
     <repositories>
         <repository>
@@ -22,13 +22,13 @@
         <dependency>
             <groupId>com.appmetr</groupId>
             <artifactId>monblank-java</artifactId>
-            <version>0.3.3</version>
+            <version>0.3.2</version>
         </dependency>
 
         <dependency>
             <groupId>com.appmetr</groupId>
             <artifactId>appmetr-s2s-java</artifactId>
-            <version>0.1.9</version>
+            <version>0.1.11</version>
         </dependency>
 
         <dependency>
