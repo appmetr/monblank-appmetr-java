@@ -5,7 +5,7 @@
     <groupId>com.appmetr</groupId>
     <artifactId>monblank</artifactId>
     <packaging>pom</packaging>
-    <version>0.1.2</version>
+    <version>0.1.2-SNAPSHOT</version>
     <name>Monblank</name>
 
     <modules>
@@ -28,6 +28,13 @@
         <tag>HEAD</tag>
     </scm>
 
+    <distributionManagement>
+        <repository>
+            <id>bintray</id>
+            <url>https://api.bintray.com/maven/appmetr/maven/monblank</url>
+        </repository>
+    </distributionManagement>
+
     <repositories>
         <repository>
             <id>appmetr-repo</id>
@@ -41,7 +48,7 @@
             <dependency>
                 <groupId>com.appmetr</groupId>
                 <artifactId>monblank-java</artifactId>
-                <version>0.3.3-SNAPSHOT</version>
+                <version>0.3.3</version>
             </dependency>
 
             <dependency>
