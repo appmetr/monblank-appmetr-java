@@ -20,19 +20,16 @@
         <dependency>
             <groupId>com.appmetr</groupId>
             <artifactId>monblank-java</artifactId>
-            <version>0.3.2</version>
         </dependency>
 
         <dependency>
             <groupId>com.appmetr</groupId>
             <artifactId>appmetr-s2s-java</artifactId>
-            <version>0.1.20</version>
         </dependency>
 
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
-            <version>2.2</version>
         </dependency>
     </dependencies>
 
