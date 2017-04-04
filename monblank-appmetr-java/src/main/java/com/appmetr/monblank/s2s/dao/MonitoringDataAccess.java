@@ -5,7 +5,6 @@ import com.appmetr.monblank.MonblankConst;
 import com.appmetr.monblank.Monitoring;
 import com.appmetr.monblank.StopWatch;
 import com.appmetr.s2s.AppMetr;
-import com.appmetr.s2s.AppMetrTimer;
 import org.joda.time.MutableDateTime;
 import org.joda.time.ReadableDateTime;
 import org.slf4j.Logger;
