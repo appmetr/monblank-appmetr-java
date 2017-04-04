@@ -33,9 +33,8 @@ public class MonitoringS2SImpl implements Monitoring {
     }
 
     private void setCounter(MonitorKey key, double value) {
-        //TODO uncomment it when monblank-java:0.3.3 will be released
-//        final Counter counter = getOrCreateCounter(key);
-//        counter.set(value);
+        final Counter counter = getOrCreateCounter(key);
+        counter.set(value);
     }
 
     private Counter getOrCreateCounter(MonitorKey key) {

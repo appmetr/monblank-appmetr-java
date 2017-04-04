@@ -16,6 +16,20 @@
     <name>MonBlank Client realization via AppMetr</name>
     <version>0.2.6-SNAPSHOT</version>
 
+    <scm>
+        <connection>scm:git:ssh://git@github.com/appmetr/monblank-java.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/appmetr/monblank-java.git</developerConnection>
+        <url>http://github.com/appmetr/monblank-java</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>bintray</id>
+            <url>https://api.bintray.com/maven/appmetr/maven/monblank-appmetr-java</url>
+        </repository>
+    </distributionManagement>
+
     <dependencies>
         <dependency>
             <groupId>com.appmetr</groupId>

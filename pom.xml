@@ -22,9 +22,9 @@
     </properties>
 
     <scm>
-        <connection>scm:git:ssh://git@github.com/appmetr/monblank-appmetr-java.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/appmetr/monblank-appmetr-java.git</developerConnection>
-        <url>http://github.com/appmetr/monblank-appmetr-java</url>
+        <connection>scm:git:ssh://git@github.com/appmetr/monblank-java.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/appmetr/monblank-java.git</developerConnection>
+        <url>http://github.com/appmetr/monblank-java</url>
         <tag>HEAD</tag>
     </scm>
 
@@ -41,7 +41,7 @@
             <dependency>
                 <groupId>com.appmetr</groupId>
                 <artifactId>monblank-java</artifactId>
-                <version>0.3.2</version>
+                <version>0.3.3-SNAPSHOT</version>
             </dependency>
 
             <dependency>
@@ -53,7 +53,7 @@
             <dependency>
                 <groupId>com.appmetr</groupId>
                 <artifactId>monblank-appmetr-java</artifactId>
-                <version>0.2.3</version>
+                <version>0.2.6-SNAPSHOT</version>
             </dependency>
 
             <dependency>
@@ -72,106 +72,11 @@
     </dependencyManagement>
 
     <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <includes>
-                    <include>**/*.properties</include>
-                    <include>**/*.xml</include>
-                </includes>
-                <filtering>true</filtering>
-            </resource>
-            <resource>
-                <directory>src/main/resources</directory>
-                <includes>
-                    <include>**</include>
-                </includes>
-                <excludes>
-                    <exclude>**/*.properties</exclude>
-                    <exclude>**/*.xml</exclude>
-                </excludes>
-                <filtering>false</filtering>
-            </resource>
-            <resource>
-                <directory>src/main/java</directory>
-                <includes>
-                    <include>**</include>
-                </includes>
-                <excludes>
-                    <exclude>**/*.java</exclude>
-                </excludes>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
-        <testResources>
-            <testResource>
-                <directory>src/test/java</directory>
-                <includes>
-                    <include>**</include>
-                </includes>
-                <excludes>
-                    <exclude>**/*.java</exclude>
-                </excludes>
-            </testResource>
-            <testResource>
-                <directory>src/test/resources</directory>
-                <includes>
-                    <include>**</include>
-                </includes>
-                <excludes>
-                    <exclude>**/*.java</exclude>
-                </excludes>
-            </testResource>
-        </testResources>
-
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.5.1</version>
-                <configuration>
-                    <optimize>true</optimize>
-                    <showDeprecation>true</showDeprecation>
-                    <showWarnings>true</showWarnings>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>buildnumber-maven-plugin</artifactId>
-                <version>1.1</version>
-                <executions>
-                    <execution>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>create</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <timestampFormat>{0, date, HH:mm dd'/'MM'/'yyyy}</timestampFormat>
-                    <doCheck>false</doCheck>
-                    <doUpdate>false</doUpdate>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.15</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.maven.surefire</groupId>
-                        <artifactId>surefire-junit47</artifactId>
-                        <version>2.15</version>
-                    </dependency>
-                </dependencies>
-                <configuration>
-                    <includes>
-                        <include>**/*Test.java</include>
-                    </includes>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.1</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -184,32 +89,8 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
+                <version>2.5.3</version>
             </plugin>
         </plugins>
     </build>
-
-    <profiles>
-        <profile>
-            <id>monblank-appmetr-java</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <modules>
-                <module>monblank-appmetr-java</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>monblank-java</id>
-            <modules>
-                <module>monblank-java</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>monblank-appmetr-java-examples</id>
-            <modules>
-                <module>monblank-appmetr-java-examples</module>
-            </modules>
-        </profile>
-    </profiles>
-
 </project>
