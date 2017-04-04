@@ -39,6 +39,18 @@ public class Counter {
         return key;
     }
 
+    public synchronized Counter set(double value) {
+        total = value;
+        hits = 1;
+        if (value < min) min = value;
+        if (value > max) max = value;
+        sumOfSquares = value * value;
+        if (firstAccess == 0) firstAccess = System.currentTimeMillis();
+        lastAccess = System.currentTimeMillis();
+
+        return this;
+    }
+
     public synchronized Counter update(double value) {
         total += value;
         hits++;
