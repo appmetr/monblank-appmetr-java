@@ -33,8 +33,9 @@ public class MonitoringS2SImpl implements Monitoring {
     }
 
     private void setCounter(MonitorKey key, double value) {
-        final Counter counter = getOrCreateCounter(key);
-        counter.set(value);
+        //TODO uncomment it when monblank-java:0.3.3 will be released
+//        final Counter counter = getOrCreateCounter(key);
+//        counter.set(value);
     }
 
     private Counter getOrCreateCounter(MonitorKey key) {
@@ -77,15 +78,15 @@ public class MonitoringS2SImpl implements Monitoring {
         updateCounter(key, value);
     }
 
-    @Override public void set(String group, String monitorName, String units, double value, Map<String, String> properties) {
+    public void set(String group, String monitorName, String units, double value, Map<String, String> properties) {
         setCounter(new MonitorKey(buildMonitorName(group, monitorName, units), properties), value);
     }
 
-    @Override public void set(String group, String monitorName, String units, double value) {
+    public void set(String group, String monitorName, String units, double value) {
         setCounter(new MonitorKey(buildMonitorName(group, monitorName, units)), value);
     }
 
-    @Override public void set(MonitorKey key, double value) {
+    public void set(MonitorKey key, double value) {
         setCounter(key, value);
     }
 
