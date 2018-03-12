@@ -38,11 +38,6 @@
             <groupId>com.appmetr</groupId>
             <artifactId>appmetr-s2s-java</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-        </dependency>
     </dependencies>
 
 </project>
