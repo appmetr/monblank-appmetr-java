@@ -25,17 +25,21 @@ public class MonitoringDataAccess {
     private final AppMetr appMetr;
     private final Clock clock;
     private final ScheduledExecutorService executorService;
+    private final boolean needShutdownExecutor;
     private final Future<?> jobFuture;
 
     public MonitoringDataAccess(Monitoring monitoring, AppMetr appMetr) {
-        this(monitoring, appMetr, Clock.systemUTC(), Executors.newSingleThreadScheduledExecutor());
+        this(monitoring, appMetr, Clock.systemUTC(),
+                Executors.newSingleThreadScheduledExecutor(), true);
     }
 
-    public MonitoringDataAccess(Monitoring monitoring, AppMetr appMetr, Clock clock, ScheduledExecutorService executorService) {
+    public MonitoringDataAccess(Monitoring monitoring, AppMetr appMetr, Clock clock,
+                                ScheduledExecutorService executorService, boolean needShutdownExecutor) {
         this.monitoring = monitoring;
         this.appMetr = appMetr;
         this.clock = clock;
         this.executorService = executorService;
+        this.needShutdownExecutor = needShutdownExecutor;
 
         jobFuture = executorService.scheduleWithFixedDelay(this::execute, MonblankConst.MONITOR_FLUSH_INTERVAL_MINUTES,
                 MonblankConst.MONITOR_FLUSH_INTERVAL_MINUTES, TimeUnit.MINUTES);
@@ -64,13 +68,16 @@ public class MonitoringDataAccess {
                 jobFuture.get();
             }
         } catch (InterruptedException e) {
-            log.error("Stop was interrupted", e);
+            log.warn("Monitor stopping was interrupted", e);
             Thread.currentThread().interrupt();
+            return;
         } catch (ExecutionException | CancellationException e) {
-            log.error("Exception while execution", e);
+            log.warn("Exception while execution", e);
         }
 
-        executorService.shutdown();
+        if (needShutdownExecutor) {
+            executorService.shutdown();
+        }
 
         appMetr.stop();
     }
