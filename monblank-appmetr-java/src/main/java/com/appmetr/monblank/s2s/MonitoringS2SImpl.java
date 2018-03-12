@@ -4,52 +4,19 @@ import com.appmetr.monblank.*;
 import com.appmetr.monblank.s2s.bridge.PersistenceStopWatch;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class MonitoringS2SImpl implements Monitoring {
-    private final Map<MonitorKey, Counter> monitors = new HashMap<MonitorKey, Counter>();
+    public static final String MONITORING_TOKEN = "8bafd904-97f9-40f6-844f-fe1f5594d1f9";
 
-    /**
-     * Creates monitor and returns it instance
-     *
-     * @param key - key for monitor.<br/><b>Do not use character '@' in group or monitor name!</b>
-     * @return - monitor instance to stop created monitor
-     */
-    private StopWatch create(MonitorKey key) {
-        return new PersistenceStopWatch(this, key);
-    }
+    private final Map<MonitorKey, Counter> monitors = new ConcurrentHashMap<>();
 
     @Override public synchronized List<Counter> reset() {
-        final List<Counter> counters = new ArrayList<Counter>(monitors.values());
+        final List<Counter> counters = new ArrayList<>(monitors.values());
         monitors.clear();
         return counters;
-    }
-
-    private void updateCounter(MonitorKey key, double value) {
-        final Counter counter = getOrCreateCounter(key);
-        counter.update(value);
-    }
-
-    private void setCounter(MonitorKey key, double value) {
-        final Counter counter = getOrCreateCounter(key);
-        counter.set(value);
-    }
-
-    private Counter getOrCreateCounter(MonitorKey key) {
-        final Counter counter = monitors.get(key);
-        return counter == null ? safeCreateCounter(key) : counter;
-    }
-
-    private synchronized Counter safeCreateCounter(MonitorKey key) {
-        Counter counter = monitors.get(key);
-
-        if (counter != null) return counter;
-
-        counter = new Counter(key);
-        monitors.put(key, counter);
-        return counter;
     }
 
     @Override public StopWatch start(String group, String monitorName) {
@@ -77,15 +44,15 @@ public class MonitoringS2SImpl implements Monitoring {
         updateCounter(key, value);
     }
 
-    public void set(String group, String monitorName, String units, double value, Map<String, String> properties) {
+    @Override public void set(String group, String monitorName, String units, double value, Map<String, String> properties) {
         setCounter(new MonitorKey(buildMonitorName(group, monitorName, units), properties), value);
     }
 
-    public void set(String group, String monitorName, String units, double value) {
+    @Override public void set(String group, String monitorName, String units, double value) {
         setCounter(new MonitorKey(buildMonitorName(group, monitorName, units)), value);
     }
 
-    public void set(MonitorKey key, double value) {
+    @Override public void set(MonitorKey key, double value) {
         setCounter(key, value);
     }
 
@@ -101,14 +68,36 @@ public class MonitoringS2SImpl implements Monitoring {
         updateCounter(key, 1.0);
     }
 
-    private static String wrapIfSet(String units) {
-        if (units == null || units.length() == 0) {
-            return "";
-        }
-        return MonblankConst.UNIT_DELIMITER + "(" + units + ")";
+    /**
+     * Creates monitor and returns it instance
+     *
+     * @param key - key for monitor.<br/><b>Do not use character '@' in group or monitor name!</b>
+     * @return - monitor instance to stop created monitor
+     */
+    private StopWatch create(MonitorKey key) {
+        return new PersistenceStopWatch(this, key);
+    }
+
+    private void updateCounter(MonitorKey key, double value) {
+        getOrCreateCounter(key).update(value);
+    }
+
+    private void setCounter(MonitorKey key, double value) {
+        getOrCreateCounter(key).set(value);
+    }
+
+    private Counter getOrCreateCounter(MonitorKey key) {
+        return monitors.computeIfAbsent(key, Counter::new);
     }
 
     private String buildMonitorName(String group, String monitorName, String units) {
         return group + MonblankConst.EVENT_DELIMITER + monitorName + wrapIfSet(units);
+    }
+
+    private static String wrapIfSet(String units) {
+        if (units == null || units.isEmpty()) {
+            return "";
+        }
+        return MonblankConst.UNIT_DELIMITER + "(" + units + ")";
     }
 }

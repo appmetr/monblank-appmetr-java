@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Note. This class is NOT thread-safe!
  * However, most likely you will be using it as local scope variable in methods.
  */
-public class StopWatch implements Serializable {
+public class StopWatch implements Serializable, AutoCloseable {
 
     protected static final int NOT_STARTED = 0;
 
@@ -105,6 +105,10 @@ public class StopWatch implements Serializable {
             return elapsedTime;
         }
         return elapsedTime;
+    }
+
+    @Override public void close() {
+        stop();
     }
 
     /**

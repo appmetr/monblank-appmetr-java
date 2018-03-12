@@ -17,8 +17,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <maven.compiler.source>1.6</maven.compiler.source>
-        <maven.compiler.target>1.6</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
     <scm>
@@ -53,14 +53,14 @@
 
             <dependency>
                 <groupId>com.appmetr</groupId>
-                <artifactId>appmetr-s2s-java</artifactId>
-                <version>0.1.20</version>
+                <artifactId>monblank-appmetr-java</artifactId>
+                <version>0.2.7-SNAPSHOT</version>
             </dependency>
 
             <dependency>
                 <groupId>com.appmetr</groupId>
-                <artifactId>monblank-appmetr-java</artifactId>
-                <version>0.2.7-SNAPSHOT</version>
+                <artifactId>appmetr-s2s-java</artifactId>
+                <version>0.1.21</version>
             </dependency>
 
             <dependency>
@@ -100,4 +100,5 @@
             </plugin>
         </plugins>
     </build>
+    
 </project>

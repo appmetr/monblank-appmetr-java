@@ -2,82 +2,103 @@ package com.appmetr.monblank.s2s.dao;
 
 import com.appmetr.monblank.Counter;
 import com.appmetr.monblank.MonblankConst;
+import com.appmetr.monblank.MonitorKey;
 import com.appmetr.monblank.Monitoring;
-import com.appmetr.monblank.StopWatch;
 import com.appmetr.s2s.AppMetr;
-import org.joda.time.MutableDateTime;
-import org.joda.time.ReadableDateTime;
+import com.appmetr.s2s.events.Action;
+import com.appmetr.s2s.events.Event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Clock;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.Map;
+import java.util.concurrent.*;
 
 public class MonitoringDataAccess {
-    private static Logger logger = LoggerFactory.getLogger(MonitoringDataAccess.class);
+    private static Logger log = LoggerFactory.getLogger(MonitoringDataAccess.class);
 
-    private AppMetr appMetr;
-    private AppMetrTimer flushJob;
-    private Monitoring monitoring;
-    private MonitoringCounterService monitoringCounterService;
-
-    private Lock flushJobLock = new ReentrantLock();
-
-    private static final int MILLIS_PER_MINUTE = 1000 * 60;
+    private final Monitoring monitoring;
+    private final AppMetr appMetr;
+    private final Clock clock;
+    private final ScheduledExecutorService executorService;
+    private final Future<?> jobFuture;
 
     public MonitoringDataAccess(Monitoring monitoring, AppMetr appMetr) {
+        this(monitoring, appMetr, Clock.systemUTC(), Executors.newSingleThreadScheduledExecutor());
+    }
+
+    public MonitoringDataAccess(Monitoring monitoring, AppMetr appMetr, Clock clock, ScheduledExecutorService executorService) {
         this.monitoring = monitoring;
         this.appMetr = appMetr;
-        monitoringCounterService = new MonitoringCounterService(appMetr);
+        this.clock = clock;
+        this.executorService = executorService;
 
-        flushJob = new AppMetrTimer(MonblankConst.MONITOR_FLUSH_INTERVAL_MINUTES * MILLIS_PER_MINUTE, new Runnable() {
-            @Override public void run() {
-                execute();
-            }
-        }, "MonitorFlushJob");
-        new Thread(flushJob).start();
+        jobFuture = executorService.scheduleWithFixedDelay(this::execute, MonblankConst.MONITOR_FLUSH_INTERVAL_MINUTES,
+                MonblankConst.MONITOR_FLUSH_INTERVAL_MINUTES, TimeUnit.MINUTES);
     }
 
     public void execute() {
-        flushJobLock.lock();
-
-        final long startMillis = System.currentTimeMillis();
         try {
-            MutableDateTime runTime = new MutableDateTime(System.currentTimeMillis());
-
             //shift timestamp backward, 'cause we need to store events "in past"
-            runTime.addMinutes(-1 * MonblankConst.MONITOR_FLUSH_INTERVAL_MINUTES);
-            saveAndReset(runTime);
+            final Instant timestamp = Instant.now(clock).minus(MonblankConst.MONITOR_FLUSH_INTERVAL_MINUTES, ChronoUnit.MINUTES);
 
-        } catch (Exception e) {
-            logger.error("Exception while persisting monitors", e);
-        } finally {
-            final long persistEnd = System.currentTimeMillis();
-            logger.info("Monitor scheduler persist millis took: " + (persistEnd - startMillis));
+            saveAndReset(timestamp);
 
-            flushJobLock.unlock();
+        } catch (Throwable throwable) {
+            log.error("", throwable);
         }
     }
 
-    public void saveAndReset(ReadableDateTime time) {
-        StopWatch swMethod = new StopWatch().start();
-
+    protected void saveAndReset(Instant timestamp) {
         final List<Counter> monitors = monitoring.reset();
-        monitoringCounterService.persistMonitors(monitors, time);
-
-        swMethod.stop();
-        logger.info(String.format("Getting active monitors. Method execution time %s", swMethod.toString()));
+        persistMonitors(monitors, timestamp);
     }
 
     public void stop() {
-        flushJobLock.lock();
-
         try {
-            flushJob.stop();
-            appMetr.stop();
-        } finally {
-            flushJobLock.unlock();
+            if (!jobFuture.cancel(false)) {
+                jobFuture.get();
+            }
+        } catch (InterruptedException e) {
+            log.error("Stop was interrupted", e);
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException | CancellationException e) {
+            log.error("Exception while execution", e);
         }
+
+        executorService.shutdown();
+
+        appMetr.stop();
+    }
+
+    protected void persistMonitors(List<Counter> activeCounters, Instant timestamp) {
+        for (Counter counter : activeCounters) {
+            try {
+                appMetr.track(convertMonitorToEvent(counter, timestamp));
+            } catch (Exception e) {
+                log.error("Unexpected exception while persisting monitors.", e);
+            }
+        }
+
+        log.debug("Persisted monitors: {}", activeCounters.size());
+    }
+
+    protected Action convertMonitorToEvent(Counter counter, Instant timestamp) {
+        final MonitorKey monitorKey = counter.getKey();
+        final Map<String, Object> map = new HashMap<>();
+
+        counter.getKey().getProperties().forEach(map::put);
+
+        map.put(MonblankConst.HITS_FEATURE, counter.getHits());
+        map.put(MonblankConst.TOTAL_FEATURE, counter.getTotal());
+        map.put(MonblankConst.SQUARES_SUM_FEATURES, counter.getSumOfSquares());
+        map.put(MonblankConst.MIN_FEATURE, counter.getMin());
+        map.put(MonblankConst.MAX_FEATURE, counter.getMax());
+
+        return new Event(monitorKey.getName()).setTimestamp(timestamp.toEpochMilli()).setProperties(map);
     }
 }

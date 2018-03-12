@@ -5,7 +5,7 @@ import com.appmetr.monblank.Monitoring;
 import com.appmetr.monblank.s2s.MonitoringS2SImpl;
 import com.appmetr.monblank.s2s.dao.MonitoringDataAccess;
 import com.appmetr.s2s.AppMetr;
-import com.appmetr.s2s.persister.FileBatchPersister;
+import com.appmetr.s2s.persister.MemoryBatchPersister;
 
 import java.util.HashMap;
 
@@ -15,8 +15,8 @@ public class MonblankSimpleExample {
     private static String url = "";
     private static String filePersisterPath = "";
 
-    public static void main(String[] args) {
-        AppMetr appMetr = new AppMetr(token, url, new FileBatchPersister(filePersisterPath));
+    public static void main(String[] args) throws InterruptedException {
+        AppMetr appMetr = new AppMetr(token, url, new MemoryBatchPersister());
 
         Monitoring monitoring = new MonitoringS2SImpl();
         MonitoringDataAccess monitoringDataAccess = new MonitoringDataAccess(monitoring, appMetr);
@@ -25,12 +25,11 @@ public class MonblankSimpleExample {
         properties.put("second", "2");
         properties.put("third", "3");
         monitoring.add(new MonitorKey("someKey", properties), 25);
-        try {
-            Thread.sleep(60 * 1000);
-        } catch (Exception e) {
-            //NOP
-        }
+
+        Thread.sleep(90 * 1000);
 
         monitoringDataAccess.stop();
+
+        Thread.sleep(5 * 1000);
     }
 }
