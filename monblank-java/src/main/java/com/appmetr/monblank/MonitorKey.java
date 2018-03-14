@@ -1,7 +1,6 @@
 package com.appmetr.monblank;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 public class MonitorKey {
@@ -11,14 +10,12 @@ public class MonitorKey {
     private final int precalcHash;
 
     public MonitorKey(String name) {
-        this.name = name;
-        this.properties = new HashMap<>();
-        precalcHash = precalcHash();
+        this(name, null);
     }
 
     public MonitorKey(String name, Map<String, String> properties) {
         this.name = name;
-        this.properties = Collections.unmodifiableMap(properties == null ? new HashMap<>() : properties);
+        this.properties = Collections.unmodifiableMap(properties == null ? Collections.emptyMap() : properties);
         precalcHash = precalcHash();
     }
 
