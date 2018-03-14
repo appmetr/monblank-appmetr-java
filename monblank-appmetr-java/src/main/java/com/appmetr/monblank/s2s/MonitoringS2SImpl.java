@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class MonitoringS2SImpl implements Monitoring {
-    public static final String MONITORING_TOKEN = "8bafd904-97f9-40f6-844f-fe1f5594d1f9";
 
     private final Map<MonitorKey, Counter> monitors = new ConcurrentHashMap<>();
 
