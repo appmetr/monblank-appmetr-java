@@ -26,15 +26,17 @@ public class MonitoringDataAccess {
     private final Clock clock;
     private final ScheduledExecutorService executorService;
     private final boolean needShutdownExecutor;
+    private final boolean needShutdownAppMetr;
     private final Future<?> jobFuture;
 
     public MonitoringDataAccess(Monitoring monitoring, AppMetr appMetr) {
         this(monitoring, appMetr, Clock.systemUTC(),
-                Executors.newSingleThreadScheduledExecutor(), true);
+                Executors.newSingleThreadScheduledExecutor(), true, true);
     }
 
     public MonitoringDataAccess(Monitoring monitoring, AppMetr appMetr, Clock clock,
-                                ScheduledExecutorService executorService, boolean needShutdownExecutor) {
+                                ScheduledExecutorService executorService,
+                                boolean needShutdownExecutor, boolean needShutdownAppMetr) {
         this.monitoring = monitoring;
         this.appMetr = appMetr;
         this.clock = clock;
@@ -43,6 +45,7 @@ public class MonitoringDataAccess {
 
         jobFuture = executorService.scheduleWithFixedDelay(this::execute, MonblankConst.MONITOR_FLUSH_INTERVAL_MINUTES,
                 MonblankConst.MONITOR_FLUSH_INTERVAL_MINUTES, TimeUnit.MINUTES);
+        this.needShutdownAppMetr = needShutdownAppMetr;
     }
 
     public void execute() {
@@ -79,7 +82,9 @@ public class MonitoringDataAccess {
             executorService.shutdown();
         }
 
-        appMetr.stop();
+        if (needShutdownAppMetr) {
+            appMetr.stop();
+        }
     }
 
     protected void persistMonitors(List<Counter> activeCounters, Instant timestamp) {
