@@ -6,19 +6,19 @@
     <parent>
         <groupId>com.appmetr</groupId>
         <artifactId>monblank</artifactId>
-        <version>0.1.3-SNAPSHOT</version>
+        <version>0.1.3</version>
     </parent>
 
     <artifactId>monblank-java</artifactId>
     <packaging>jar</packaging>
-    <version>0.3.4-SNAPSHOT</version>
+    <version>0.4.0</version>
     <name>MonBlank Client interface for Java</name>
 
     <scm>
         <connection>scm:git:ssh://git@github.com/appmetr/monblank-java.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/appmetr/monblank-java.git</developerConnection>
         <url>http://github.com/appmetr/monblank-java</url>
-        <tag>HEAD</tag>
+        <tag>monblank-0.1.3</tag>
     </scm>
 
     <distributionManagement>
