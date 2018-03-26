@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MonitorProperties {
-    private Map<String, String> properties = new HashMap<String, String>();
+    private Map<String, String> properties = new HashMap<>();
 
     public static MonitorProperties create() {
         return new MonitorProperties();
@@ -16,7 +16,7 @@ public class MonitorProperties {
 
     public static MonitorProperties create(Map<String, String> propertires) {
         MonitorProperties monitorProperties = new MonitorProperties();
-        monitorProperties.properties = new HashMap<String, String>(propertires);
+        monitorProperties.properties = new HashMap<>(propertires);
 
         return monitorProperties;
     }

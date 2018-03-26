@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Note. This class is NOT thread-safe!
  * However, most likely you will be using it as local scope variable in methods.
  */
-public class StopWatch implements Serializable {
+public class StopWatch implements Serializable, AutoCloseable {
 
     protected static final int NOT_STARTED = 0;
 
@@ -107,9 +107,13 @@ public class StopWatch implements Serializable {
         return elapsedTime;
     }
 
+    @Override public void close() {
+        stop();
+    }
+
     /**
      * @return Elapsed time
-     * If stopwatch is {@link #RUNNING} - returns time elapsed from start to current moment<br/>
+     * If stopwatch is {@link #RUNNING} - returns time elapsed from start to current moment<br>
      * If stopwatch was {@link #PAUSED} or {@link #STOPPED} - measured time from start until was paused or stopped.
      */
     public long getElapsedTime() {
@@ -120,11 +124,11 @@ public class StopWatch implements Serializable {
     }
 
     /**
-     * Available states are:<br/>
-     * <code>{@link #NOT_STARTED}</code><br/>
-     * <code>{@link #RUNNING}</code><br/>
-     * <code>{@link #PAUSED}</code><br/>
-     * <code>{@link #STOPPED}</code><br/>
+     * Available states are:<br>
+     * <code>{@link #NOT_STARTED}</code><br>
+     * <code>{@link #RUNNING}</code><br>
+     * <code>{@link #PAUSED}</code><br>
+     * <code>{@link #STOPPED}</code><br>
      * @return current stopwatch state
      */
     protected int getState() {

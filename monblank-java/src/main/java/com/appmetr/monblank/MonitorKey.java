@@ -1,24 +1,21 @@
 package com.appmetr.monblank;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 
 public class MonitorKey {
 
-    private String name;
-    private Map<String, String> properties;
-
+    private final String name;
+    private final Map<String, String> properties;
     private final int precalcHash;
 
     public MonitorKey(String name) {
-        this.name = name;
-        this.properties = new HashMap<String, String>();
-        precalcHash = precalcHash();
+        this(name, null);
     }
 
     public MonitorKey(String name, Map<String, String> properties) {
         this.name = name;
-        this.properties = properties == null ? new HashMap<String, String>() : properties;
+        this.properties = Collections.unmodifiableMap(properties == null ? Collections.emptyMap() : properties);
         precalcHash = precalcHash();
     }
 
@@ -55,5 +52,13 @@ public class MonitorKey {
     @Override
     public int hashCode() {
         return precalcHash;
+    }
+
+    @Override public String toString() {
+        return "MonitorKey{" +
+                "name='" + name + '\'' +
+                ", precalcHash=" + precalcHash +
+                ", properties=" + properties +
+                '}';
     }
 }
