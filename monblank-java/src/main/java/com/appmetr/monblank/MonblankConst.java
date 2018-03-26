@@ -5,7 +5,6 @@ public class MonblankConst {
     public static final int MONITOR_FLUSH_INTERVAL_MINUTES = 1;
     public static final int MONITOR_RESET_INTERVAL_MINUTES = 1;
 
-    public static final String MONITORING_TOKEN = "8bafd904-97f9-40f6-844f-fe1f5594d1f9";
     public static final String EVENT_DELIMITER = "/";
     public static final String UNIT_DELIMITER = " ";
 
@@ -40,5 +39,4 @@ public class MonblankConst {
     public static final String SQUARES_SUM = "sumOfSquares";
 
     public static final String[] indicators = {HITS, TOTAL, MIN, MAX};
-
 }

@@ -56,7 +56,7 @@ public class MonitoringDataAccess {
             saveAndReset(timestamp);
 
         } catch (Throwable throwable) {
-            log.error("", throwable);
+            log.error("Exception during saving metrics", throwable);
         }
     }
 
