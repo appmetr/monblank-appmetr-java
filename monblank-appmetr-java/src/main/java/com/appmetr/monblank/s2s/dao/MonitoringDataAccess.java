@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.concurrent.*;
 
 public class MonitoringDataAccess {
-    private static Logger log = LoggerFactory.getLogger(MonitoringDataAccess.class);
+    private static final Logger log = LoggerFactory.getLogger(MonitoringDataAccess.class);
 
     private final Monitoring monitoring;
     private final AppMetr appMetr;
