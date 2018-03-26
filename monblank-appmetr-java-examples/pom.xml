@@ -32,6 +32,12 @@
             <artifactId>monblank-appmetr-java</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.3</version>
+        </dependency>
+
         <!-- Guice -->
         <dependency>
             <groupId>com.google.inject</groupId>
