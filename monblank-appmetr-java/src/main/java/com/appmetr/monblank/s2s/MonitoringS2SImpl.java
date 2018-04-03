@@ -79,7 +79,7 @@ public class MonitoringS2SImpl implements Monitoring {
     /**
      * Creates monitor and returns it instance
      *
-     * @param key - key for monitor.<br/><b>Do not use character '@' in group or monitor name!</b>
+     * @param key key for monitor.<br><b>Do not use character '@' in group or monitor name!</b>
      * @return - monitor instance to stop created monitor
      */
     protected StopWatch create(MonitorKey key) {
