@@ -5,17 +5,20 @@ import java.util.List;
 import java.util.Map;
 
 public class MonitoringStub implements Monitoring {
+    public static final MonitoringStub INSTANCE = new MonitoringStub();
+    
+    private static final StopWatchStub STOP_WATCH_STUB = new StopWatchStub();
 
     @Override public StopWatch start(String group, String monitorName) {
-        return new StopWatchStub();
+        return STOP_WATCH_STUB;
     }
 
     @Override public StopWatch start(String group, String monitorName, Map<String, String> properties) {
-        return new StopWatchStub();
+        return STOP_WATCH_STUB;
     }
 
     @Override public StopWatch start(MonitorKey key) {
-        return new StopWatchStub();
+        return STOP_WATCH_STUB;
     }
 
     @Override public void add(String group, String monitorName, String units, double value, Map<String, String> properties) {
