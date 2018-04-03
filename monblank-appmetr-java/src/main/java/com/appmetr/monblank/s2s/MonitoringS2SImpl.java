@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class MonitoringS2SImpl implements Monitoring {
 
-    private final Map<MonitorKey, Counter> monitors = new ConcurrentHashMap<>();
+    protected final Map<MonitorKey, Counter> monitors = new ConcurrentHashMap<>();
 
     @Override public synchronized List<Counter> reset() {
         final List<Counter> counters = new ArrayList<>(monitors.values());
@@ -20,11 +20,11 @@ public class MonitoringS2SImpl implements Monitoring {
     }
 
     @Override public StopWatch start(String group, String monitorName) {
-        return create(createMonitorKey(buildMonitorName(group, monitorName, MonblankConst.MS))).start();
+        return create(createMonitorKey(monitorName(group, monitorName, MonblankConst.MS))).start();
     }
 
     @Override public StopWatch start(String group, String monitorName, Map<String, String> properties) {
-        return create(createMonitorKey(buildMonitorName(group, monitorName, MonblankConst.MS), properties)).start();
+        return create(createMonitorKey(monitorName(group, monitorName, MonblankConst.MS), properties)).start();
     }
 
     @Override public StopWatch start(MonitorKey key) {
@@ -32,12 +32,12 @@ public class MonitoringS2SImpl implements Monitoring {
     }
 
     @Override public void add(String group, String monitorName, String units, double value) {
-        updateCounter(createMonitorKey(buildMonitorName(group, monitorName, units)), value);
+        updateCounter(createMonitorKey(monitorName(group, monitorName, units)), value);
     }
 
     @Override
     public void add(String group, String monitorName, String units, double value, Map<String, String> properties) {
-        updateCounter(createMonitorKey(buildMonitorName(group, monitorName, units), properties), value);
+        updateCounter(createMonitorKey(monitorName(group, monitorName, units), properties), value);
     }
 
     @Override public void add(MonitorKey key, double value) {
@@ -45,11 +45,11 @@ public class MonitoringS2SImpl implements Monitoring {
     }
 
     @Override public void set(String group, String monitorName, String units, double value, Map<String, String> properties) {
-        setCounter(createMonitorKey(buildMonitorName(group, monitorName, units), properties), value);
+        setCounter(createMonitorKey(monitorName(group, monitorName, units), properties), value);
     }
 
     @Override public void set(String group, String monitorName, String units, double value) {
-        setCounter(createMonitorKey(buildMonitorName(group, monitorName, units)), value);
+        setCounter(createMonitorKey(monitorName(group, monitorName, units)), value);
     }
 
     @Override public void set(MonitorKey key, double value) {
@@ -57,11 +57,11 @@ public class MonitoringS2SImpl implements Monitoring {
     }
 
     @Override public void inc(String group, String monitorName) {
-        updateCounter(createMonitorKey(buildMonitorName(group, monitorName, MonblankConst.COUNT)), 1.0);
+        updateCounter(createMonitorKey(monitorName(group, monitorName, MonblankConst.COUNT)), 1.0);
     }
 
     @Override public void inc(String group, String monitorName, Map<String, String> properties) {
-        updateCounter(createMonitorKey(buildMonitorName(group, monitorName, MonblankConst.COUNT), properties), 1.0);
+        updateCounter(createMonitorKey(monitorName(group, monitorName, MonblankConst.COUNT), properties), 1.0);
     }
 
     @Override public void inc(MonitorKey key) {
@@ -82,27 +82,27 @@ public class MonitoringS2SImpl implements Monitoring {
      * @param key - key for monitor.<br/><b>Do not use character '@' in group or monitor name!</b>
      * @return - monitor instance to stop created monitor
      */
-    private StopWatch create(MonitorKey key) {
+    protected StopWatch create(MonitorKey key) {
         return new PersistenceStopWatch(this, key);
     }
 
-    private void updateCounter(MonitorKey key, double value) {
+    protected void updateCounter(MonitorKey key, double value) {
         getOrCreateCounter(key).update(value);
     }
 
-    private void setCounter(MonitorKey key, double value) {
+    protected void setCounter(MonitorKey key, double value) {
         getOrCreateCounter(key).set(value);
     }
 
-    private Counter getOrCreateCounter(MonitorKey key) {
+    protected Counter getOrCreateCounter(MonitorKey key) {
         return monitors.computeIfAbsent(key, Counter::new);
     }
 
-    private String buildMonitorName(String group, String monitorName, String units) {
+    protected String monitorName(String group, String monitorName, String units) {
         return group + MonblankConst.EVENT_DELIMITER + monitorName + wrapIfSet(units);
     }
 
-    private static String wrapIfSet(String units) {
+    protected static String wrapIfSet(String units) {
         if (units == null || units.isEmpty()) {
             return "";
         }
