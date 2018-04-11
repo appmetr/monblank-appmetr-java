@@ -21,7 +21,9 @@ public class MonitorProperties {
     }
 
     public MonitorProperties add(String name, Object value) {
-        properties.put(name, String.valueOf(value));
+        if (value != null) {
+            properties.put(name, String.valueOf(value));
+        }
         return this;
     }
 
