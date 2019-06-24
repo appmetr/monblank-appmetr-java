@@ -43,6 +43,7 @@ public class MonitoringDataAccess {
         this.executorService = executorService;
         this.needShutdownExecutor = needShutdownExecutor;
 
+        appMetr.start();
         jobFuture = executorService.scheduleWithFixedDelay(this::execute, MonblankConst.MONITOR_FLUSH_INTERVAL_MINUTES,
                 MonblankConst.MONITOR_FLUSH_INTERVAL_MINUTES, TimeUnit.MINUTES);
         this.needShutdownAppMetr = needShutdownAppMetr;
