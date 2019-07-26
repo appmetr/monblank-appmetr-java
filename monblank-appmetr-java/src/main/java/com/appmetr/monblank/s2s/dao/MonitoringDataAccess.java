@@ -42,10 +42,12 @@ public class MonitoringDataAccess {
         this.clock = clock;
         this.executorService = executorService;
         this.needShutdownExecutor = needShutdownExecutor;
+        this.needShutdownAppMetr = needShutdownAppMetr;
 
+        // Start instance
+        this.appMetr.start();
         jobFuture = executorService.scheduleWithFixedDelay(this::execute, MonblankConst.MONITOR_FLUSH_INTERVAL_MINUTES,
                 MonblankConst.MONITOR_FLUSH_INTERVAL_MINUTES, TimeUnit.MINUTES);
-        this.needShutdownAppMetr = needShutdownAppMetr;
     }
 
     public void execute() {
@@ -83,7 +85,7 @@ public class MonitoringDataAccess {
         }
 
         if (needShutdownAppMetr) {
-            appMetr.stop();
+            appMetr.softStop();
         }
     }
 
