@@ -5,7 +5,7 @@ import com.appmetr.monblank.Monitoring;
 import com.appmetr.monblank.s2s.MonitoringS2SImpl;
 import com.appmetr.monblank.s2s.dao.MonitoringDataAccess;
 import com.appmetr.s2s.AppMetr;
-import com.appmetr.s2s.persister.HeapStorage;
+import com.appmetr.s2s.persister.NonBlockingHeapStorage;
 
 import java.util.HashMap;
 
@@ -15,8 +15,11 @@ public class MonblankSimpleExample {
     private static final String URL = "";
 
     public static void main(String[] args) throws InterruptedException {
+        NonBlockingHeapStorage storage = new NonBlockingHeapStorage();
+        storage.setMaxBytes(32 * 1024 * 1024);
+
         AppMetr appMetr = new AppMetr(TOKEN, URL);
-        appMetr.setBatchStorage(new HeapStorage());
+        appMetr.setBatchStorage(storage);
 
         Monitoring monitoring = new MonitoringS2SImpl();
         MonitoringDataAccess monitoringDataAccess = new MonitoringDataAccess(monitoring, appMetr);
