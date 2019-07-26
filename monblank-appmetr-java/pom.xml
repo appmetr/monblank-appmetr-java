@@ -6,13 +6,13 @@
     <parent>
         <groupId>com.appmetr</groupId>
         <artifactId>monblank</artifactId>
-        <version>0.1.8</version>
+        <version>0.1.9-SNAPSHOT</version>
     </parent>
 
     <artifactId>monblank-appmetr-java</artifactId>
     <packaging>jar</packaging>
     <name>MonBlank Client realization via AppMetr</name>
-    <version>0.3.4</version>
+    <version>0.3.5-SNAPSHOT</version>
 
     <scm>
         <connection>scm:git:ssh://git@github.com/appmetr/monblank-java.git</connection>

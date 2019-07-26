@@ -5,7 +5,7 @@
     <groupId>com.appmetr</groupId>
     <artifactId>monblank</artifactId>
     <packaging>pom</packaging>
-    <version>0.1.8</version>
+    <version>0.1.9-SNAPSHOT</version>
     <name>Monblank</name>
 
     <modules>
@@ -47,13 +47,13 @@
             <dependency>
                 <groupId>com.appmetr</groupId>
                 <artifactId>monblank-java</artifactId>
-                <version>0.4.5</version>
+                <version>0.4.6-SNAPSHOT</version>
             </dependency>
 
             <dependency>
                 <groupId>com.appmetr</groupId>
                 <artifactId>monblank-appmetr-java</artifactId>
-                <version>0.3.4</version>
+                <version>0.3.5-SNAPSHOT</version>
             </dependency>
 
             <dependency>

@@ -6,12 +6,12 @@
     <parent>
         <groupId>com.appmetr</groupId>
         <artifactId>monblank</artifactId>
-        <version>0.1.8</version>
+        <version>0.1.9-SNAPSHOT</version>
     </parent>
 
     <artifactId>monblank-java</artifactId>
     <packaging>jar</packaging>
-    <version>0.4.5</version>
+    <version>0.4.6-SNAPSHOT</version>
     <name>MonBlank Client interface for Java</name>
 
     <scm>
