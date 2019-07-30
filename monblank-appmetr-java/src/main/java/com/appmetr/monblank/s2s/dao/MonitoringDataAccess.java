@@ -64,7 +64,6 @@ public class MonitoringDataAccess {
 
     public void stop() {
         if (isStopped) {
-            log.warn("Monitor is already stopped");
             return;
         } else {
             isStopped = true;
