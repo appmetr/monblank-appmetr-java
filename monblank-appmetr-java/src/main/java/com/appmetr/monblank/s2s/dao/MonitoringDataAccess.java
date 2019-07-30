@@ -25,24 +25,19 @@ public class MonitoringDataAccess {
     private final AppMetr appMetr;
     private final Clock clock;
     private final ScheduledExecutorService executorService;
-    private final boolean needShutdownExecutor;
-    private final boolean needShutdownAppMetr;
     private final Future<?> jobFuture;
+    private volatile boolean isStopped = false;
 
     public MonitoringDataAccess(Monitoring monitoring, AppMetr appMetr) {
         this(monitoring, appMetr, Clock.systemUTC(),
-                Executors.newSingleThreadScheduledExecutor(), true, true);
+                Executors.newSingleThreadScheduledExecutor());
     }
 
-    public MonitoringDataAccess(Monitoring monitoring, AppMetr appMetr, Clock clock,
-                                ScheduledExecutorService executorService,
-                                boolean needShutdownExecutor, boolean needShutdownAppMetr) {
+    public MonitoringDataAccess(Monitoring monitoring, AppMetr appMetr, Clock clock, ScheduledExecutorService executorService) {
         this.monitoring = monitoring;
         this.appMetr = appMetr;
         this.clock = clock;
         this.executorService = executorService;
-        this.needShutdownExecutor = needShutdownExecutor;
-        this.needShutdownAppMetr = needShutdownAppMetr;
 
         // Start instance
         this.appMetr.start();
@@ -50,7 +45,7 @@ public class MonitoringDataAccess {
                 MonblankConst.MONITOR_FLUSH_INTERVAL_MINUTES, TimeUnit.MINUTES);
     }
 
-    public void execute() {
+    private synchronized void execute() {
         try {
             //shift timestamp backward, 'cause we need to store events "in past"
             final Instant timestamp = Instant.now(clock).minus(MonblankConst.MONITOR_FLUSH_INTERVAL_MINUTES, ChronoUnit.MINUTES);
@@ -68,9 +63,18 @@ public class MonitoringDataAccess {
     }
 
     public void stop() {
+        if (isStopped) {
+            log.warn("Monitor is already stopped");
+            return;
+        } else {
+            isStopped = true;
+        }
+
         try {
             if (!jobFuture.cancel(false)) {
                 jobFuture.get();
+            } else {
+                execute();
             }
         } catch (InterruptedException e) {
             log.warn("Monitor stopping was interrupted", e);
@@ -80,13 +84,8 @@ public class MonitoringDataAccess {
             log.warn("Exception while execution", e);
         }
 
-        if (needShutdownExecutor) {
-            executorService.shutdown();
-        }
-
-        if (needShutdownAppMetr) {
-            appMetr.softStop();
-        }
+        executorService.shutdown();
+        appMetr.softStop();
     }
 
     protected void persistMonitors(List<Counter> activeCounters, Instant timestamp) {
